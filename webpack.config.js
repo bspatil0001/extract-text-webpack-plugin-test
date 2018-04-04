@@ -7,9 +7,9 @@ const HTMLPlugin = require('html-webpack-plugin');
 const isProd = process.env.NODE_ENV === 'production';
 
 extractSass = new ExtractTextPlugin({
-    filename: "Css/test.css",
-    // allChunks: true
-  })
+  filename: "Css/test.css",
+  // allChunks: true
+})
 
 const config = {
   devtool: '#eval-source-map',
@@ -17,7 +17,8 @@ const config = {
   cache: false,
   output: {
     path: __dirname + '/dist',
-    filename: 'main.js'
+    filename: 'main.js',
+    publicPath: '/assets'
   },
   mode: 'development',
   node: {
@@ -39,13 +40,20 @@ const config = {
           }
         }
       },
+      // {
+      //   test: /\.scss$/,
+      //   use: ExtractTextPlugin.extract({
+      //     fallback: 'style-loader',
+      //     use: ['css-loader', 'sass-loader']
+      //   })
+      // }
       {
         test: /\.scss$/,
-        use: ExtractTextPlugin.extract({
+        loader: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: ['css-loader', 'sass-loader']
         })
-      }
+      },
       //   {
       //     test: /\.scss$/,
       //     use: [
@@ -53,6 +61,31 @@ const config = {
       //       "css-loader"
       //     ]
       //   },
+      // {
+      //   test: /\.(gif|png|jpe?g|svg)$/i,
+      //   use: [
+      //     'file-loader',
+      //     {
+      //       loader: 'image-webpack-loader',
+      //       options: {
+      //         bypassOnDebug: true,
+      //       },
+      //     },
+      //   ],
+      // },
+      {
+        test: /\.(png|jpg|svg|jpeg)$/,
+        loader: 'file-loader?name=/img/[name].[ext]'
+      }
+      // {
+      //   test: /\.(png|jp(e*)g|svg)$/,
+      //   use: [{
+      //     loader: 'url-loader',
+      //     options: {
+      //       name: 'images-test/testste.[ext]'
+      //     }
+      //   }]
+      // }
     ]
   },
   plugins: [
@@ -60,7 +93,7 @@ const config = {
     //     filename: "styletest.css",
     //     chunkFilename: "styletest.css"
     //   })
-    extractSass
+    new ExtractTextPlugin('bundle.css')
   ]
 }
 
